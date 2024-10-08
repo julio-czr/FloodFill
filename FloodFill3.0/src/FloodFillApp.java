@@ -8,28 +8,30 @@ import java.io.IOException;
 public class FloodFillApp {
 
     private static FloodFill floodFill;
-    private static ImagePanel imagePanel;
+    private static Imagem imagem;
     private static Timer timer;
-    private static final int DELAY = 1; // Tempo em milissegundos entre cada iteração
-    private static final int PIXELS_PER_STEP = 200; // Número de pixels preenchidos por iteração
+
+    private static final int DELAY = 1; // delay em ms
+    private static final int PIXELS_POR_INTERACAO = 200; // pixels alterados por iteração
+    private static final Color COR =Color.RED;
 
     public static void main(String[] args) {
-        BufferedImage image = loadImageFromFile(); // Carrega a imagem a partir de um arquivo PNG
+        BufferedImage image = carregarImagem(); // Carrega a imagem 
 
         if (image != null) {
-            JFrame frame = createFrame(image.getWidth(), image.getHeight(), image);
-            startFloodFill(image, 10, 10, Color.RED);
+            criaFrame(image.getWidth(), image.getHeight(), image); // cria o Frame
+            startFloodFill(image, 10, 10, COR);// começa o processo do floodfill
         }
     }
 
-    private static BufferedImage loadImageFromFile() {
-        JFileChooser fileChooser = new JFileChooser();  // Abre o seletor de arquivos para o usuário escolher a imagem
+    private static BufferedImage carregarImagem() {
+        JFileChooser fileChooser = new JFileChooser();  // seletor de arquivos 
         int result = fileChooser.showOpenDialog(null);
 
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             try {
-                return ImageIO.read(selectedFile);  // Carrega a imagem selecionada
+                return ImageIO.read(selectedFile);  
             } catch (IOException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Erro ao carregar a imagem.");
@@ -38,13 +40,13 @@ public class FloodFillApp {
         return null;
     }
 
-    private static JFrame createFrame(int width, int height, BufferedImage image) {
+    private static JFrame criaFrame(int width, int height, BufferedImage image) {
         JFrame frame = new JFrame("Flood Fill Example");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(width + 50, height + 50);
 
-        imagePanel = new ImagePanel(image);
-        frame.add(imagePanel);
+        imagem = new Imagem(image);
+        frame.add(imagem);
         frame.setVisible(true);
 
         return frame;
@@ -53,15 +55,15 @@ public class FloodFillApp {
     private static void startFloodFill(BufferedImage image, int startX, int startY, Color fillColor) {
         floodFill = new FloodFill(image, startX, startY, fillColor);
 
-        timer = new Timer(DELAY, e -> updateFloodFill());
+        timer = new Timer(DELAY, e -> updateFloodFill()); // repete o código de acordo com o delay
         timer.start();
     }
 
     private static void updateFloodFill() {
-        floodFill.fillNextPixels(PIXELS_PER_STEP);
-        imagePanel.repaint();
-
-        if (floodFill.isComplete()) {
+        floodFill.preencherPixels(PIXELS_POR_INTERACAO);
+        imagem.repaint();
+        
+        if (floodFill.finalizar()) {
             timer.stop();
             JOptionPane.showMessageDialog(null, "Preenchimento concluído!");
         }
