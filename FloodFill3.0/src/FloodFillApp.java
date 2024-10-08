@@ -11,21 +11,21 @@ public class FloodFillApp {
     private static Imagem imagem;
     private static Timer timer;
 
-    private static final int DELAY = 1; // delay em ms
-    private static final int PIXELS_POR_INTERACAO = 200; // pixels alterados por iteração
+    private static final int DELAY = 1; 
+    private static final int PIXELS_POR_INTERACAO = 100; 
     private static final Color COR =Color.RED;
 
     public static void main(String[] args) {
-        BufferedImage image = carregarImagem(); // Carrega a imagem 
+        BufferedImage image = carregarImagem(); 
 
         if (image != null) {
-            criaFrame(image.getWidth(), image.getHeight(), image); // cria o Frame
-            startFloodFill(image, 10, 10, COR);// começa o processo do floodfill
+            criaFrame(image.getWidth(), image.getHeight(), image); 
+            startFloodFill(image, 10, 10, COR);
         }
     }
 
     private static BufferedImage carregarImagem() {
-        JFileChooser fileChooser = new JFileChooser();  // seletor de arquivos 
+        JFileChooser fileChooser = new JFileChooser();  
         int result = fileChooser.showOpenDialog(null);
 
         if (result == JFileChooser.APPROVE_OPTION) {
@@ -55,7 +55,7 @@ public class FloodFillApp {
     private static void startFloodFill(BufferedImage image, int startX, int startY, Color fillColor) {
         floodFill = new FloodFill(image, startX, startY, fillColor);
 
-        timer = new Timer(DELAY, e -> updateFloodFill()); // repete o código de acordo com o delay
+        timer = new Timer(DELAY, e -> updateFloodFill()); 
         timer.start();
     }
 

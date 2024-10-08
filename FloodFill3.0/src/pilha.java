@@ -16,8 +16,8 @@ public class pilha<T> {
 
     public void empilhar(T valor) {
         Node<T> newNode = new Node<>(valor);
-        newNode.next = pilha; // O novo nó aponta para o nó atual no topo
-        pilha = newNode; // Atualiza o topo da pilha para o novo nó
+        newNode.next = pilha; 
+        pilha = newNode; 
     }
 
     public T desempilhar() {
@@ -25,7 +25,7 @@ public class pilha<T> {
             return null;
         }
         T data = pilha.data;
-        pilha = pilha.next; // O topo agora aponta para o próximo nó
+        pilha = pilha.next; 
         return data;
     }
 
