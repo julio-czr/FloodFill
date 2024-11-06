@@ -7,7 +7,9 @@ import java.io.IOException;
 
 public class FloodFillApp {
 
-    private static FloodFill floodFill;
+    private static FloodFillFila floodFillFila;
+    private static FloodFillPilha floodFillPilha;
+
     private static Imagem imagem;
     private static Timer timer;
 
@@ -15,16 +17,15 @@ public class FloodFillApp {
     private static final int PIXELS_POR_INTERACAO = 1000;
     private static final Color COR = Color.RED;
     private static int contadorAlteracoes = 0; // contador de alterações
-    private static BufferedImage imagemOriginal; // imagem original
     private static int numImg =0;
 
     public static void main(String[] args) {
         BufferedImage image = carregarImagem();
-
         if (image != null) {
-            imagemOriginal = image;
             criaFrame(image.getWidth(), image.getHeight(), image);
-            startFloodFill(image, 10, 10, COR);
+            startFloodFillFila(image, 10, 10, COR);
+
+           
         }
     }
 
@@ -56,25 +57,52 @@ public class FloodFillApp {
         return frame;
     }
 
-    private static void startFloodFill(BufferedImage image, int startX, int startY, Color fillColor) {
-        floodFill = new FloodFill(image, startX, startY, fillColor);
+    private static void startFloodFillFila(BufferedImage image, int startX, int startY, Color fillColor) {
+        floodFillFila = new FloodFillFila(image, startX, startY, fillColor);
 
-        timer = new Timer(DELAY, e -> updateFloodFill(image));
+        timer = new Timer(DELAY, e -> updateFloodFillFila(image));
+        timer.start();
+    }
+    private static void startFloodFillPilha(BufferedImage image, int startX, int startY, Color fillColor) {
+        floodFillPilha = new FloodFillPilha(image, startX, startY, fillColor);
+
+        timer = new Timer(DELAY, e -> updateFloodFillPilha(image));
         timer.start();
     }
 
-    private static void updateFloodFill(BufferedImage image) {
-        floodFill.preencherPixels(PIXELS_POR_INTERACAO);
+    private static void updateFloodFillFila(BufferedImage image) {
+        floodFillFila.preencherPixels(PIXELS_POR_INTERACAO);
         imagem.repaint();
         contadorAlteracoes++;
 
-        if (contadorAlteracoes >= 20) {
+        if (contadorAlteracoes >= 10) {
             numImg++;
             salvarImagem(image, "ResultadoImagens/imagem_salva"+numImg+".png");
             contadorAlteracoes = 0; // Reinicia o contador após salvar
         }
 
-        if (floodFill.finalizar()) {
+        if (floodFillFila.finalizar()) {
+            salvarImagem(image, "ResultadoImagens/imagem_salva"+numImg+".png");
+            timer.stop();
+            JOptionPane.showMessageDialog(null, "Preenchimento concluído!");
+            image= carregarImagem();
+            criaFrame(image.getWidth(), image.getHeight(), image);
+            startFloodFillPilha(image, 10, 10, COR);
+        }
+    }
+    private static void updateFloodFillPilha(BufferedImage image) {
+        floodFillPilha.preencherPixels(PIXELS_POR_INTERACAO);
+        imagem.repaint();
+        contadorAlteracoes++;
+
+        if (contadorAlteracoes >= 10) {
+            numImg++;
+            salvarImagem(image, "ResultadoImagens/imagem_salva"+numImg+".png");
+            contadorAlteracoes = 0; // Reinicia o contador após salvar
+        }
+
+        if (floodFillPilha.finalizar()) {
+            salvarImagem(image, "ResultadoImagens/imagem_salva"+numImg+".png");
             timer.stop();
             JOptionPane.showMessageDialog(null, "Preenchimento concluído!");
         }
